@@ -1,0 +1,12 @@
+; Q6-1
+    LDI R16, 0x48
+    LDI R17, 0xBC
+    LDI R20, 0x9A ; LOW BYTE
+    LDI R21, 0x7F ; HIGH BYTE
+
+    ADD R20, R16 ;R18 = R18 + R16 = 9A + 48 = E2
+    ADD R21, R17 ;R19 = R19 + R17 -> C = 1 
+                ;R19 = 7F + BC + 0 = 3B (all in hex)
+
+
+HERE: RJMP HERE

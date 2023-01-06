@@ -1,0 +1,24 @@
+;
+; ex3-1.asm
+;
+; Created: 8/25/2022 11:21:44 AM
+; Author : 6273
+;
+
+
+; Replace with your application code
+start:
+	ldi R16,0x01
+	ldi R17,0x02
+
+   	sts 0x220,R16
+	sts 0x221,R17
+
+	lds R18,0x220
+	lds R19,0x221
+
+	add R18,R19
+
+	sts 0x221,R18
+
+L1:    rjmp L1
