@@ -1,0 +1,18 @@
+	cbi DDRC,3
+	sbi PORTC,3
+	LDI r16,0xFF
+	out DDRD,R16
+
+again: 
+	SBIS PINC,3
+
+	jmp itaa
+	LDI r16,0x55
+	OUT PORTD,R16
+
+	RJMP again
+
+itaa:
+	LDI r16,0xaa
+	OUT PORTD,R16
+	

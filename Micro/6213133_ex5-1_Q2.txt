@@ -1,0 +1,16 @@
+	LDI	R20, 0xFF	;make port B an output port
+	OUT	DDRB, R20	
+
+	LDI	R20, 0x00	
+	OUT	DDRD, R20
+L1:	
+	in	R16,PIND	
+
+	lsl r16
+	lsl r16
+	lsl r16
+	lsl r16
+
+	OUT PORTB,r16
+
+	RJMP	L1		;keep doing this

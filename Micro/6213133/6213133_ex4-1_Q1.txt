@@ -1,0 +1,25 @@
+.ORG 0
+	LDI R16,HIGH(RAMEND)	
+	OUT SPH,R16
+	LDI R16,LOW(RAMEND)
+	OUT SPL,R16
+
+while1:
+	in r16,PinB
+	cpi r16,0x99
+	breq while1_end
+	rcall DELAY
+	rjmp while1
+while1_end:		
+	here: rjmp here
+
+;-------------------delay subroutine---------------
+	.ORG 0x300	; put the subroutine far away at 0x300	
+DELAY:
+	LDI R20,0xFF	
+AGAIN:
+	NOP				
+	NOP
+	DEC R20			
+	BRNE AGAIN		
+	RET	

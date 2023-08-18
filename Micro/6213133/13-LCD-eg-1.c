@@ -1,0 +1,88 @@
+// write to LCD using 8-bit mode
+// use circuit in LCD examples 1.pcf
+
+#include <avr/io.h>    		
+
+#define F_CPU 16000000UL
+#include <util/delay.h>		
+
+#define	LCD_DPRT  PORTD
+#define	LCD_DDDR  DDRD		
+#define	LCD_DPIN  PIND 		
+#define	LCD_CPRT  PORTB 	
+#define	LCD_CDDR  DDRB 		
+#define	LCD_CPIN  PINB 		
+#define	LCD_RS  0 			
+#define	LCD_RW  1 			
+#define	LCD_EN  2 			
+
+//*******************************************************
+void lcdCommand( unsigned char cmnd )
+{
+  LCD_DPRT = cmnd;			
+  LCD_CPRT &= ~ (1<<LCD_RS); // RS = 0 for command
+  LCD_CPRT &= ~ (1<<LCD_RW); // RW = 0 for write
+  LCD_CPRT |= (1<<LCD_EN);	// EN = 1
+  _delay_us(1);				
+  LCD_CPRT &= ~ (1<<LCD_EN); // EN = 0
+  _delay_us(100);			
+}
+
+//*******************************************************
+void lcdData( unsigned char data )
+{
+  LCD_DPRT = data;			
+  LCD_CPRT |= (1<<LCD_RS);	// RS = 1 for data
+  LCD_CPRT &= ~ (1<<LCD_RW); // RW = 0 for write
+  LCD_CPRT |= (1<<LCD_EN);	// EN = 1
+  _delay_us(1);				
+  LCD_CPRT &= ~ (1<<LCD_EN); // EN = 0
+  _delay_us(100);			
+}
+
+//*******************************************************
+void lcd_init()
+{
+  LCD_DDDR = 0xFF; // data port is output
+  LCD_CDDR = 0xFF; // command port is output
+ 
+  LCD_CPRT &=~(1<<LCD_EN);	
+  _delay_us(2000);			
+  lcdCommand(0x38);	// init LCD 2 lines 5x7 matrix
+  lcdCommand(0x0E);	// display on, cursor on			
+  lcdCommand(0x01);	// clear LCD	
+  _delay_us(2000);			
+  lcdCommand(0x06);	// shift cursor right		
+}
+
+//*******************************************************
+void lcd_gotoxy(unsigned char x, unsigned char y)
+{  
+ unsigned char firstCharAdr[]={0x80,0xC0,0x94,0xD4}; // page 14
+ lcdCommand(firstCharAdr[y-1] + x - 1);
+ _delay_us(100);	
+}
+
+//*******************************************************
+void lcd_print( char * str )
+{
+  unsigned char i = 0 ;
+  while(str[i]!=0)
+  {
+    lcdData(str[i]);
+    i++ ;
+  }
+}
+
+//*******************************************************
+int main(void) 
+{	
+	lcd_init();
+	lcd_gotoxy(1,1);
+	lcd_print("The world is but");
+	lcd_gotoxy(1,2);
+	lcd_print("one country");
+	
+	while(1);				
+    	return 0;
+}
